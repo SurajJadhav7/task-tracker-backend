@@ -1,6 +1,11 @@
 class Api::V1::TodosController < ApplicationController
     def index
-        @todos = Todo.limit(params[:_limit])
+        if params[:q] and params[:q] != ""
+            @todos = Todo.search(params[:q])
+        else
+            @todos = Todo.all
+        end
+        @todos = @todos[0..(params[:_limit].to_i-1)] if params[:_limit]
         render json: @todos
     end
     
